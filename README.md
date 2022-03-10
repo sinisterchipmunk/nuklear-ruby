@@ -39,7 +39,7 @@ Or install it yourself as:
 
 The base class `Nuklear::Renderer` is essentially a headless renderer. It
 implements all necessary functionality to serve as a renderer for Nuklear,
-except the actual drawing) and is also intended to be subclassed for a custom
+except the actual drawing, and is also intended to be subclassed for a custom
 renderer which actually draws something. The two bundled OpenGL renderers
 (`Nuklear::Renderer::OpenGL2` and `Nuklear::Renderer::OpenGL4`) are examples
 of this.
