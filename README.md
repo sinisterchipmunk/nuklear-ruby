@@ -18,6 +18,13 @@ This project implements a set of Ruby classes which wrap the Nuklear API. It
 also provides two sample renderers (OpenGL 2 and OpenGL 4).
 
 
+## Screenshots
+
+![Hello Nuklear](https://github.com/sinisterchipmunk/nuklear-ruby/blob/master/examples/hello_nuklear.png)
+
+![Calculator](https://github.com/sinisterchipmunk/nuklear-ruby/blob/master/examples/calculator.png)
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
