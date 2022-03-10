@@ -1,11 +1,17 @@
 #!/usr/bin/env ruby
-
+#
 # This example is based loosely upon:
 # https://github.com/Immediate-Mode-UI/Nuklear/blob/master/demo/calculator.c
-
+#
+# This demonstrates using the Nuklear DSL to build and maintain a simple but
+# functional calculator. In order to show you only the most relevant
+# information, much of the set-up code has been moved to /examples/lib/ and
+# this file focuses mainly on the DSL. If you are more interested in the
+# set-up code and event loop, you will find that the files in /examples/lib/
+# are quite similar to what appears in /examples/hello_nuklear.rb.
+#
 require 'bundler/setup'
 require 'nuklear'
-
 require_relative 'lib/sdl2_init'
 require_relative 'lib/sdl2_input'
 require_relative 'lib/opengl_init'
@@ -79,7 +85,6 @@ class Calculator
   def tick
     @window.frame do
       @ctx.tick
-      # @ctx.process_commands
     end
   end
 

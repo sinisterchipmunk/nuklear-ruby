@@ -146,6 +146,10 @@ module Nuklear
         end
       end
 
+      def close
+        self.enabled = false
+      end
+
       def result(new_state, context)
         if new_state != @last_state
           @left, @top, @width, @height = *new_state[0...4]
