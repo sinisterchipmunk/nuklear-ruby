@@ -7,5 +7,10 @@ class BufferTest < Minitest::Test
 
     ptr = buffer.to_ptr
     assert_equal 10, ptr.size
+
+    ptr = Fiddle::Pointer.malloc(15)
+    buffer = Nuklear::Buffer.new ptr.size, ptr
+    assert_equal 15, buffer.size
+    assert_equal ptr, buffer.to_ptr
   end
 end

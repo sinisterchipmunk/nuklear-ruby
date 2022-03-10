@@ -169,7 +169,6 @@ VALUE renderer_draw_gl(VALUE self, VALUE cmd) {
   float y = (float) NUM2DBL(RARRAY_AREF(clip_rect, 1));
   float w = (float) NUM2DBL(RARRAY_AREF(clip_rect, 2));
   float h = (float) NUM2DBL(RARRAY_AREF(clip_rect, 3));
-  printf("%d\n", NUM2UINT(rb_hash_aref(cmd, ID2SYM(rb_intern("texture_handle")))));
   glBindTexture(GL_TEXTURE_2D, (GLuint) NUM2UINT(rb_hash_aref(cmd, ID2SYM(rb_intern("texture_handle")))));
   glScissor((GLint)(x * scale.x),
             (GLint)((height - (GLint)(y + h)) * scale.y),
