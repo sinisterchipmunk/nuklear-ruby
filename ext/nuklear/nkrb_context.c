@@ -220,8 +220,21 @@ VALUE nkrb_context_ui(VALUE self) {
   return ui;
 }
 
+static VALUE nkrb_context_is_any_editor_active(VALUE self) {
+  struct nk_context *ctx = nkrb_context_get(self);
+  struct nk_window *iter;
+  iter = ctx->begin;
+  while (iter) {
+    if (iter->edit.active & NK_EDIT_ACTIVE)
+      return Qtrue;
+    iter = iter->next;
+  }
+  return Qfalse;
+}
+
 static VALUE nkrb_context_is_any_item_active(VALUE self) {
   struct nk_context *ctx = nkrb_context_get(self);
+  if (nkrb_context_is_any_editor_active(self) == Qtrue) return Qtrue;
   return nk_item_is_any_active(ctx) ? Qtrue : Qfalse;
 }
 
@@ -234,6 +247,7 @@ void nkrb_context_init(void) {
   rb_define_method(cNuklearContext, "tick", nkrb_context_tick, 0);
   rb_define_method(cNuklearContext, "ui", nkrb_context_ui, 0);
   rb_define_method(cNuklearContext, "any_item_active?", nkrb_context_is_any_item_active, 0);
+  rb_define_method(cNuklearContext, "any_editor_active?", nkrb_context_is_any_editor_active, 0);
 
   cNuklearContextEventSink = rb_define_class_under(cNuklearContext, "EventSink", rb_cObject);
   rb_define_method(cNuklearContextEventSink, "initialize", rb_nkrb_event_sink_initialize, 1);
