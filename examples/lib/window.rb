@@ -35,7 +35,7 @@ module Examples
 
     def nuklear_context=(ctx)
       @nuklear_context = ctx
-      @nuklear_context.renderer = Nuklear::Renderer::OpenGL2.new(@nuklear_context)
+      @nuklear_context.renderer = Nuklear::Renderer::OpenGL2.new
       @nuklear_context.renderer.window_size = @handle.size
       @nuklear_context.renderer.drawable_size = renderable_size
     end

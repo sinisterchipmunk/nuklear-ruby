@@ -52,17 +52,17 @@ static enum nk_draw_vertex_layout_format rb2nk_format(VALUE v) {
   else rb_raise(rb_eArgError, "Invalid vertex layout format name");
 }
 
-VALUE renderer_initialize(VALUE self, VALUE context) {
+VALUE renderer_initialize(VALUE self) {
   if (!gladLoadGL())
     rb_raise(rb_eStandardError, "Failed to init GLAD");
   // printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-  rb_call_super(1, &context);
+  rb_call_super(0, NULL);
 
   return self;
 }
 
-VALUE renderer_render_gl(VALUE self) {
+VALUE renderer_render_gl(VALUE self, VALUE rcontext) {
   VALUE window_size = rb_funcall(self, rb_intern("window_size"), 0);
   VALUE drawable_size = rb_funcall(self, rb_intern("drawable_size"), 0);
   VALUE window_width = rb_ary_entry(window_size, 0);
@@ -96,7 +96,7 @@ VALUE renderer_render_gl(VALUE self) {
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
 
-  rb_call_super(0, NULL);
+  rb_call_super(1, &rcontext);
   
   /* default OpenGL state */
   glDisableClientState(GL_VERTEX_ARRAY);
@@ -119,8 +119,8 @@ VALUE renderer_render_gl(VALUE self) {
   return self;
 }
 
-VALUE renderer_nk_convert_gl(VALUE self) {
-  VALUE result = rb_call_super(0, NULL);
+VALUE renderer_nk_convert_gl(VALUE self, VALUE rcontext) {
+  VALUE result = rb_call_super(1, &rcontext);
   VALUE rconfig = rb_funcall(self, rb_intern("convert_config"), 0);
   GLsizei vs = (GLsizei) FIX2INT(rb_hash_aref(rconfig, ID2SYM(rb_intern("vertex_size"))));
 
@@ -190,8 +190,8 @@ void Init_nuklear_renderer_opengl2(void) {
   cNuklearRendererOpenGL2 = rb_define_class_under(cNuklearRenderer, "OpenGL2", cNuklearRenderer);
   cNuklearBuffer = rb_const_get(mNuklear, rb_intern("Buffer"));
 
-  rb_define_method(cNuklearRendererOpenGL2, "initialize", renderer_initialize, 1);
-  rb_define_method(cNuklearRendererOpenGL2, "nk_convert", renderer_nk_convert_gl, 0);
+  rb_define_method(cNuklearRendererOpenGL2, "initialize", renderer_initialize, 0);
+  rb_define_method(cNuklearRendererOpenGL2, "nk_convert", renderer_nk_convert_gl, 1);
   rb_define_method(cNuklearRendererOpenGL2, "draw",       renderer_draw_gl, 1);
-  rb_define_method(cNuklearRendererOpenGL2, "render",     renderer_render_gl, 0);
+  rb_define_method(cNuklearRendererOpenGL2, "render",     renderer_render_gl, 1);
 }

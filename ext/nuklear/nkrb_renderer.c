@@ -33,12 +33,12 @@ static enum nk_draw_vertex_layout_format rb2nk_format(VALUE v) {
   else rb_raise(rb_eArgError, "Invalid vertex layout format name");
 }
 
-VALUE nkrb_renderer_convert(VALUE self) {
+VALUE nkrb_renderer_convert(VALUE self, VALUE rcontext) {
   struct nk_context *context = NULL;
   struct nk_buffer *commands = NULL;
   struct nk_buffer *vertices = NULL;
   struct nk_buffer *indices  = NULL;
-  Data_Get_Struct(rb_funcall(self, rb_intern("context"),  0),       struct nk_context, context);
+  Data_Get_Struct(rcontext, struct nk_context, context);
   Data_Get_Struct(rb_funcall(self, rb_intern("commands"), 0),       struct nk_buffer,  commands);
   Data_Get_Struct(rb_funcall(self, rb_intern("vertices"), 0),       struct nk_buffer,  vertices);
   Data_Get_Struct(rb_funcall(self, rb_intern("vertex_indices"), 0), struct nk_buffer,  indices);
@@ -77,10 +77,10 @@ VALUE nkrb_renderer_convert(VALUE self) {
   return self;
 }
 
-VALUE nkrb_renderer_draw_foreach(VALUE self) {
+VALUE nkrb_renderer_draw_foreach(VALUE self, VALUE rcontext) {
   struct nk_context *context = NULL;
   struct nk_buffer *commands = NULL;
-  Data_Get_Struct(rb_funcall(self, rb_intern("context"),  0), struct nk_context, context);
+  Data_Get_Struct(rcontext, struct nk_context, context);
   Data_Get_Struct(rb_funcall(self, rb_intern("commands"), 0), struct nk_buffer,  commands);
 
   /* convert from command queue into draw list and draw to screen */
@@ -109,6 +109,6 @@ VALUE nkrb_renderer_draw_foreach(VALUE self) {
 
 void nkrb_renderer_init(void) {
   VALUE cRenderer = rb_define_class_under(mNuklear, "Renderer", rb_cObject);
-  rb_define_method(cRenderer, "nk_convert",      nkrb_renderer_convert,      0);
-  rb_define_method(cRenderer, "nk_draw_foreach", nkrb_renderer_draw_foreach, 0);
+  rb_define_method(cRenderer, "nk_convert",      nkrb_renderer_convert,      1);
+  rb_define_method(cRenderer, "nk_draw_foreach", nkrb_renderer_draw_foreach, 1);
 }

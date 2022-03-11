@@ -82,7 +82,7 @@ ctx = Nuklear::Context.new(font)
 # to actually implement our real renderer on top of. Here, we'll use the
 # bundled OpenGL 2 renderer.
 require 'nuklear/nuklear_renderer_opengl2'
-ctx.renderer = Nuklear::Renderer::OpenGL2.new(ctx)
+ctx.renderer = Nuklear::Renderer::OpenGL2.new
 ```
 
 ### With DSL

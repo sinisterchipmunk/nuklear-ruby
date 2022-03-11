@@ -56,7 +56,7 @@ ctx = Nuklear::Context.new(font)
 # renderer the size of the window and the size of the drawing surface, which
 # aren't always the same thing.
 require 'nuklear/nuklear_renderer_opengl2'
-ctx.renderer = Nuklear::Renderer::OpenGL2.new(ctx)
+ctx.renderer = Nuklear::Renderer::OpenGL2.new
 ctx.renderer.window_size = window.size
 ctx.renderer.drawable_size = window.gl_drawable_size
 

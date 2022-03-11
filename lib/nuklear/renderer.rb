@@ -46,11 +46,10 @@ module Nuklear
 
     # For all renderer implementations, override #initialize to set up your
     # initial state (e.g. compiling shaders) and call `super`.
-    def initialize(context)
+    def initialize
       @commands = Nuklear::Buffer.new
       @vertices = Nuklear::Buffer.new
       @vertex_indices = Nuklear::Buffer.new
-      @context = context
       @window_size = [640, 480]
       @drawable_size = nil
       @null_texture_handle = 0
@@ -84,9 +83,9 @@ module Nuklear
     # Called at the start of a render pass. Renderers may wish to override
     # this method to apply once-per-frame state updates. They should call
     # `super` when they are ready to proceed.
-    def render
-      nk_convert
-      nk_draw_foreach { |command| draw(command) }
+    def render(context)
+      nk_convert(context)
+      nk_draw_foreach(context) { |command| draw(command) }
     end
 
     # Called for each Nuklear draw command, numerous times per render pass.

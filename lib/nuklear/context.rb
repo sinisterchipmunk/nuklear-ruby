@@ -31,7 +31,7 @@ module Nuklear
     # Nuklear frame update process. It should not be called directly.
     protected def paint
       run_commands(self)
-      renderer.render
+      renderer.render(self)
     end
 
     # Events (window events, input events, etc) will accumulate over time.

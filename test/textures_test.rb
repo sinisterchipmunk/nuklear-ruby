@@ -4,8 +4,8 @@ class TexturesTest < Minitest::Test
   EXPECTED = 0xFFFFFFFFFFFFFFFF
 
   class TextureTestRenderer < Nuklear::Renderer
-    def initialize(context, &callback)
-      super(context)
+    def initialize(&callback)
+      super
       convert_config[:null] = Fiddle::Pointer.new(EXPECTED)
       @callback = callback
     end
@@ -21,7 +21,7 @@ class TexturesTest < Minitest::Test
     font_path = File.expand_path("../examples/arial.ttf", __dir__)
     ctx = Nuklear::Context.new Nuklear::Font.new(font_path, 12) { Fiddle::Pointer.new(EXPECTED) }
     window.nuklear_context = ctx
-    window.nuklear_context.renderer = TextureTestRenderer.new(window.nuklear_context) do |cmd|
+    window.nuklear_context.renderer = TextureTestRenderer.new do |cmd|
       all_cmds << cmd
     end
 

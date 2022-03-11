@@ -54,12 +54,12 @@ void nuklear_command_buffer_free(struct nk_buffer *buf) {
   nk_buffer_free(buf);
 }
 
-VALUE renderer_initialize(VALUE self, VALUE context) {
+VALUE renderer_initialize(VALUE self) {
   if (!gladLoadGL())
     rb_raise(rb_eStandardError, "Failed to init GLAD");
   // printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-  rb_call_super(1, &context);
+  rb_call_super(0, NULL);
 
   int status;
   int prog = glCreateProgram();
@@ -124,8 +124,7 @@ VALUE renderer_initialize(VALUE self, VALUE context) {
   return self;
 }
 
-VALUE renderer_render_gl(VALUE self) {
-  struct nk_context *ctx;
+VALUE renderer_render_gl(VALUE self, VALUE rcontext) {
   struct nk_buffer *cmds;
   VALUE window_size = rb_funcall(self, rb_intern("window_size"), 0);
   VALUE drawable_size = rb_funcall(self, rb_intern("drawable_size"), 0);
@@ -144,7 +143,6 @@ VALUE renderer_render_gl(VALUE self) {
   struct nk_vec2 scale;
   VALUE context = rb_ivar_get(self, rb_intern("@context"));
   Data_Get_Struct(rb_ivar_get(context, rb_intern("@null")), struct nk_draw_null_texture, null_tex);
-  Data_Get_Struct(context, struct nk_context, ctx);
   Data_Get_Struct(rb_ivar_get(self, rb_intern("@commands")), struct nk_buffer, cmds);
 
   GLfloat ortho[4][4] = {
@@ -174,7 +172,7 @@ VALUE renderer_render_gl(VALUE self) {
   glUniform1i(uniform_tex, 0);
   glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, &ortho[0][0]);
 
-  rb_call_super(0, NULL);
+  rb_call_super(1, &rcontext);
 
   glUseProgram(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -187,8 +185,8 @@ VALUE renderer_render_gl(VALUE self) {
   return self;
 }
 
-VALUE renderer_nk_convert_gl(VALUE self) {
-  VALUE result = rb_call_super(0, NULL);
+VALUE renderer_nk_convert_gl(VALUE self, VALUE rcontext) {
+  VALUE result = rb_call_super(1, &rcontext);
 
   struct nk_buffer *vertices = NULL;
   struct nk_buffer *indices  = NULL;
@@ -248,8 +246,8 @@ void Init_nuklear_renderer_opengl4(void) {
   cNuklearRendererOpenGL4 = rb_define_class_under(cNuklearRenderer, "OpenGL4", cNuklearRenderer);
   cNuklearBuffer = rb_const_get(mNuklear, rb_intern("Buffer"));
 
-  rb_define_method(cNuklearRendererOpenGL4, "initialize", renderer_initialize, 1);
-  rb_define_method(cNuklearRendererOpenGL4, "nk_convert", renderer_nk_convert_gl, 0);
+  rb_define_method(cNuklearRendererOpenGL4, "initialize", renderer_initialize, 0);
+  rb_define_method(cNuklearRendererOpenGL4, "nk_convert", renderer_nk_convert_gl, 1);
   rb_define_method(cNuklearRendererOpenGL4, "draw",       renderer_draw_gl, 1);
-  rb_define_method(cNuklearRendererOpenGL4, "render",     renderer_render_gl, 0);
+  rb_define_method(cNuklearRendererOpenGL4, "render",     renderer_render_gl, 1);
 }
